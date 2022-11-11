@@ -10,6 +10,7 @@ module com.example.firsthomework {
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
     requires javafx.media;
+    requires java.xml.crypto;
 
     opens com.example.firsthomework to javafx.fxml;
     exports com.example.firsthomework;

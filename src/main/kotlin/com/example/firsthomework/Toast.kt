@@ -39,12 +39,14 @@ class Config {
     var appName = "Ырфь"
     var appPositionX = "Right" // Left, Right
     var appPositionY = "Bottom" // Top, Bottom
-    var openSonudPath = "D:/POPhomework/FirstHomework/src/main/resources/beat.mp3"
+    var openSonudPath = "sounds/beat.mp3"
     var openSoundDuration = 2500.0 // miliseconds
     var animationType = "Translate" // Fade, Translate
     var image = "https://avatars.mds.yandex.net/i?id=ee0a8cd0c69a411b7fee131fde2b4980-3732926-images-thumbs&n=13"
     var button1On = true
     var button2On = true
+    var button1Style = "-fx-background-color: Grey; -fx-text-fill: Snow; -fx-font-size: 17px; -fx-pref-width: 150px;"
+    var button2Style = "-fx-background-color: BlueViolet; -fx-text-fill: Snow; -fx-font-size: 17px; -fx-pref-width: 150px;"
     var leftPadding = 15.0
     var rightPadding = 15.0
     var topPadding = 15.0
@@ -118,6 +120,7 @@ class Toast {
 
         if (config.button1On) {
             var button1 = Button("JoJoButton")
+            button1.style = config.button1Style
             vbox.children.add(button1)
 
             button1.addEventHandler(
@@ -125,17 +128,20 @@ class Toast {
             ) { title.text = "Yare"
                 message.text = "Yare"
                 appName.text = "Daze"
-                iconBorder.fill = ImagePattern(Image("D:/POPhomework/FirstHomework/src/main/resources/original.png"))
-                windows.sizeToScene()}
+                iconBorder.fill = ImagePattern(Image("file:images/original.png"))
+                playYareSound()
+            }
         }
         if (config.button2On) {
             var button2 = Button("RandomButton")
+            button2.style = config.button2Style
             vbox.children.add(button2)
 
             button2.addEventHandler(
                 MouseEvent.MOUSE_CLICKED
             ) { windows.x = (0..(primaryScreenBounds.width - windows.scene.width).toInt()).random().toDouble()
-                windows.y = (0..(primaryScreenBounds.height - windows.scene.height).toInt()).random().toDouble()}
+                windows.y = (0..(primaryScreenBounds.height - windows.scene.height).toInt()).random().toDouble()
+                playMoveSound()}
         }
 
 
@@ -168,6 +174,21 @@ class Toast {
         var h = Media(Paths.get(config.openSonudPath).toUri().toString())
         var mediaPlayer = MediaPlayer(h);
         mediaPlayer.stopTime = Duration(config.openSoundDuration);
+        mediaPlayer.play();
+
+    }
+
+    private fun playMoveSound() {
+        var randSound = Media(Paths.get("sounds/randSound.mp3").toUri().toString())
+        var mediaPlayer = MediaPlayer(randSound);
+        mediaPlayer.stopTime = Duration(4000.0);
+        mediaPlayer.play();
+
+    }
+    private fun playYareSound() {
+        var randSound = Media(Paths.get("sounds/yareyaredaze.mp3").toUri().toString())
+        var mediaPlayer = MediaPlayer(randSound);
+        mediaPlayer.stopTime = Duration(4000.0);
         mediaPlayer.play();
 
     }
