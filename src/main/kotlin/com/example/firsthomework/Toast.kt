@@ -10,6 +10,7 @@ import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.image.Image
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
@@ -23,7 +24,6 @@ import javafx.stage.Screen
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Duration
-import java.lang.Double.max
 import java.nio.file.Paths
 
 enum class ImageStyle {
@@ -49,8 +49,8 @@ class Config {
     var rightPadding = 15.0
     var topPadding = 15.0
     var bottomPadding = 15.0
-    var messageStyle = "-fx-text-fill: green; -fx-font-size: 15px;"
-    var titleStyle = "-fx-text-fill: red; -fx-font-size: 14px;"
+    var messageStyle = "-fx-text-fill: green; -fx-font-size: 20px;"
+    var titleStyle = "-fx-text-fill: red; -fx-font-size: 20px;"
     var appNameStyle = "-fx-text-fill: blue; -fx-font-size: 16px;"
 }
 
@@ -60,6 +60,12 @@ class Toast {
     private var root = BorderPane()
     private var box = HBox()
     private val primaryScreenBounds = Screen.getPrimary().visualBounds
+    private var iconBorder = if (config.imageType == ImageStyle.RECTANGLE) {
+        Rectangle(100.0, 100.0)
+    }
+    else {
+        Circle(50.0, 50.0, 50.0)
+    }
 
 
     class Builder {
@@ -111,13 +117,27 @@ class Toast {
         vbox.children.addAll(title, message, appName)
 
         if (config.button1On) {
-            var button1 = Button("button1")
+            var button1 = Button("JoJoButton")
             vbox.children.add(button1)
+
+            button1.addEventHandler(
+                MouseEvent.MOUSE_CLICKED
+            ) { title.text = "Yare"
+                message.text = "Yare"
+                appName.text = "Daze"
+                iconBorder.fill = ImagePattern(Image("D:/POPhomework/FirstHomework/src/main/resources/original.png"))
+                windows.sizeToScene()}
         }
         if (config.button2On) {
-            var button2 = Button("button1")
+            var button2 = Button("RandomButton")
             vbox.children.add(button2)
+
+            button2.addEventHandler(
+                MouseEvent.MOUSE_CLICKED
+            ) { windows.x = (0..(primaryScreenBounds.width - windows.scene.width).toInt()).random().toDouble()
+                windows.y = (0..(primaryScreenBounds.height - windows.scene.height).toInt()).random().toDouble()}
         }
+
 
         box.children.add(vbox)
         root.center = box
@@ -136,12 +156,6 @@ class Toast {
             return
         }
 
-        var iconBorder = if (config.imageType == ImageStyle.RECTANGLE) {
-            Rectangle(100.0, 100.0)
-        }
-        else {
-            Circle(50.0, 50.0, 50.0)
-        }
         iconBorder.fill = ImagePattern(Image(config.image))
         box.children.add(iconBorder)
     }
@@ -153,7 +167,7 @@ class Toast {
 
         var h = Media(Paths.get(config.openSonudPath).toUri().toString())
         var mediaPlayer = MediaPlayer(h);
-        mediaPlayer.setStopTime(Duration(config.openSoundDuration));
+        mediaPlayer.stopTime = Duration(config.openSoundDuration);
         mediaPlayer.play();
 
     }
@@ -241,9 +255,6 @@ class Toast {
 class SomeClass: Application() {
     override fun start(p0: Stage?) {
         var toast = Toast.Builder()
-            .setTitle("T.N.T")
-            .setMessage("Iron Man 2")
-            .setAppName("AC/DC")
             .build()
         toast.start()
     }
