@@ -32,7 +32,7 @@ enum class ImageStyle {
 
 class Config {
     var alpha = 0.9
-    var openTime = 10000.0
+    var openTime = 5000.0
     var imageType = ImageStyle.CIRCLE
     var title = "ТЫЙЪ"
     var message = "ЫФФЙ"
@@ -68,6 +68,8 @@ class Toast {
     else {
         Circle(50.0, 50.0, 50.0)
     }
+
+    private var mouse_in_windows = false
 
 
     class Builder {
@@ -117,6 +119,13 @@ class Toast {
         message.style = config.messageStyle
         appName.style = config.appNameStyle
         vbox.children.addAll(title, message, appName)
+
+        root.addEventHandler(MouseEvent.MOUSE_ENTERED ){
+            mouse_in_windows = true
+        }
+        root.addEventHandler(MouseEvent.MOUSE_EXITED  ){
+            mouse_in_windows = false
+        }
 
         if (config.button1On) {
             var button1 = Button("JoJoButton")
@@ -260,10 +269,18 @@ class Toast {
         windows.show()
         openAnimation();
         val thread = Thread {
-            try {
-                Thread.sleep(config.openTime.toLong())
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
+            var time = config.openTime
+            val tickMilliseconds = 500.0
+            while (time > 0.0){
+                time -= tickMilliseconds
+                try {
+                    Thread.sleep(tickMilliseconds.toLong())
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
+                if (mouse_in_windows){
+                    time = config.openTime
+                }
             }
             closeAnimation()
         }
